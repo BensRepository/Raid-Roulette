@@ -14,7 +14,6 @@ import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
 
 import javax.inject.Inject;
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -85,10 +84,8 @@ public class ExamplePlugin extends Plugin
 				? client.getLocalPlayer().getName()
 				: "unknown";
 
-		// Deterministic 1-second UTC bucket (cross-client)
-		long bucket = Instant.now().getEpochSecond(); // 1-second window
-
-		int seed = (player.toLowerCase() + bucket).hashCode();
+		// Deterministic seed from game tick (world-local)
+		int seed = (player.toLowerCase() + client.getTickCount()).hashCode();
 		Random random = new Random(seed);
 
 		String selected = allRaids.get(random.nextInt(allRaids.size()));
