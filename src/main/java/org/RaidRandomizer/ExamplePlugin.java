@@ -14,6 +14,7 @@ import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
 
 import javax.inject.Inject;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -68,25 +69,35 @@ public class ExamplePlugin extends Plugin
 		client.refreshChat();
 	}
 
+	/**
+	 * UTC epoch seconds from system clock (no API).
+	 */
+	private long getUtcEpoch()
+	{
+		return Instant.now().getEpochSecond();
+	}
+
+	/**
+	 * Deterministic raid selection using 2-second UTC bucket.
+	 */
 	private String rollRaid()
 	{
+		long utc = getUtcEpoch();
+		if (utc < 0)
+		{
+			return "<col=ffffff>Time unavailable</col>";
+		}
+
+		// 2-second bucket shared across all clients with synced clocks
+		long bucket = utc / 2;
+
+		int seed = Long.hashCode(bucket);
+		Random random = new Random(seed);
+
 		List<String> allRaids = new ArrayList<>();
 		allRaids.add("COX");
 		allRaids.add("TOB");
 		allRaids.add("TOA");
-
-		if (allRaids.isEmpty())
-		{
-			return "<col=ffffff>All raids disabled</col>";
-		}
-
-		String player = client.getLocalPlayer() != null
-				? client.getLocalPlayer().getName()
-				: "unknown";
-
-		// Deterministic seed from game tick (world-local)
-		int seed = (player.toLowerCase() + client.getTickCount()).hashCode();
-		Random random = new Random(seed);
 
 		String selected = allRaids.get(random.nextInt(allRaids.size()));
 
