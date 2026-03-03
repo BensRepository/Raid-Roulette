@@ -31,7 +31,7 @@ public interface RaidRandomizerConfig extends Config
 	)
 	default boolean enableToa() { return true; }
 
-	// 🕒 UTC sync (deterministic)
+	
 	@ConfigItem(
 			keyName = "useUtcSync",
 			name = "Sync results",
@@ -43,7 +43,7 @@ public interface RaidRandomizerConfig extends Config
 		return true;
 	}
 
-	// 🎚 Speed dropdown
+	
 	enum SpinSpeed
 	{
 		FAST,
@@ -62,7 +62,7 @@ public interface RaidRandomizerConfig extends Config
 		return SpinSpeed.MEDIUM;
 	}
 
-	// 🔊 Sound toggle
+	
 	@ConfigItem(
 			keyName = "enableSounds",
 			name = "Enable sounds",
