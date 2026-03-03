@@ -1,8 +1,9 @@
 # Raid Randomizer 
 
 A fun plugin that randomizes your next raid to take on in Old School RuneScape.                  
-<img width="640" height="205" alt="image" src="https://github.com/user-attachments/assets/b3df3fae-5598-4c40-b223-69cea5f4146c" />
 
+
+![preview](https://github.com/user-attachments/assets/5d09af49-a6e6-4b79-a19b-07815ca58f95)
 
 
 ------
@@ -29,7 +30,9 @@ A fun plugin that randomizes your next raid to take on in Old School RuneScape.
 
 You must enable the sync toggle in the plugin configuration if you want results to be shared across players. They must also have the plugin installed to see results in RuneLite.
 
-![Sync configuration example](https://github.com/user-attachments/assets/4d6ac91c-c1d5-4496-a13e-a975c515b9f2)
+
+
+![sync](https://github.com/user-attachments/assets/0334ce8e-b193-4a7c-ac58-26915c69dd32)
 
 When **Sync Results** is enabled:
 
