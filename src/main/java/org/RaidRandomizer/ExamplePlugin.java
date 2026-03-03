@@ -30,11 +30,6 @@ public class ExamplePlugin extends Plugin
 	@Inject private ExampleConfig config;
 	@Inject private RaidIconManager raidIconManager;
 
-	private boolean spinning = false;
-
-	// Deterministic bucket captured at spin start
-	private long pendingBucket;
-
 	@Subscribe
 	public void onGameStateChanged(GameStateChanged event)
 	{
@@ -61,14 +56,6 @@ public class ExamplePlugin extends Plugin
 		if (!"!raid".equalsIgnoreCase(event.getMessage()))
 			return;
 
-		if (spinning)
-			return;
-
-		spinning = true;
-
-		// Capture deterministic bucket at spin start (4-second window)
-		pendingBucket = getUtcEpoch() / 4;
-
 		MessageNode node = event.getMessageNode();
 		List<String> available = getAvailableRaids();
 
@@ -76,9 +63,11 @@ public class ExamplePlugin extends Plugin
 		{
 			node.setRuneLiteFormatMessage("<col=ffffff>No raids enabled</col>");
 			client.refreshChat();
-			spinning = false;
 			return;
 		}
+
+		// capture deterministic bucket for THIS spin
+		long pendingBucket = getUtcEpoch() / 4;
 
 		int totalSpins = 28;
 		long accumulatedDelay = 0;
@@ -117,7 +106,7 @@ public class ExamplePlugin extends Plugin
 			);
 		}
 
-		// Near miss
+		// near miss
 		accumulatedDelay += 300;
 		executor.schedule(() ->
 						clientThread.invoke(() ->
@@ -131,7 +120,7 @@ public class ExamplePlugin extends Plugin
 				TimeUnit.MILLISECONDS
 		);
 
-		// Final reveal (deterministic using captured bucket)
+		// final reveal (deterministic, independent)
 		accumulatedDelay += 600;
 		executor.schedule(() ->
 						clientThread.invoke(() ->
@@ -145,7 +134,6 @@ public class ExamplePlugin extends Plugin
 
 							node.setRuneLiteFormatMessage("<col=00ff00>" + result + "</col>");
 							client.refreshChat();
-							spinning = false;
 						}),
 				accumulatedDelay,
 				TimeUnit.MILLISECONDS
@@ -179,7 +167,7 @@ public class ExamplePlugin extends Plugin
 
 	/**
 	 * Deterministic raid selection using captured 4-second bucket.
-	 * Animation speed does not affect outcome.
+
 	 */
 	private String rollRaid(long bucket)
 	{
