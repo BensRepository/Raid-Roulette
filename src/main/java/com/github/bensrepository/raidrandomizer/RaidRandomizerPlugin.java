@@ -184,7 +184,17 @@ public class RaidRandomizerPlugin extends Plugin
 			return "<col=ffffff>No raids enabled</col>";
 		}
 
-		Random random = new Random(bucket);
+		Random random;
+
+		if (config.useUtcSync())
+		{
+			random = new Random(bucket);
+		}
+		else
+		{
+			random = new Random();
+		}
+
 
 		String selected = pool.get(random.nextInt(pool.size()));
 
