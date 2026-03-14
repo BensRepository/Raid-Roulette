@@ -30,8 +30,6 @@ A fun plugin that randomizes your next raid to take on in Old School RuneScape.
 
 You must enable the sync toggle in the plugin configuration if you want results to be shared across players. They must also have the plugin installed to see results in RuneLite.
 
-
-
 ![sync](https://github.com/user-attachments/assets/0334ce8e-b193-4a7c-ac58-26915c69dd32)
 
 When **Sync Results** is enabled:
@@ -40,6 +38,12 @@ When **Sync Results** is enabled:
 - All players with sync enabled will roll the same result in that window. There is a small chance results may fall outside the bucket depending on timing.
 - If the result is identical to a previous roll, wait a bit before rolling again to allow time for a new bucket.
 - All available raids are considered in the roll when sync is active to ensure config selections wont skew results between players.
+
+**Sync Troubleshooting**
+
+If the sync isn’t working properly for you and your friends, enable the **Chat Time Stamps** plugin and set the format to **[HH:mm:ss:ms]**.
+
+Compare the timestamps between players — if they differ significantly, run a **Windows time sync** from **Date & Time Settings** to ensure your system clocks are aligned.
 
 Author
 ------
