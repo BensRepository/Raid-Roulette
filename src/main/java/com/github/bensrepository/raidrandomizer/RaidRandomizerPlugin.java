@@ -70,8 +70,10 @@ public class RaidRandomizerPlugin extends Plugin
 			return;
 		}
 
-		// Bucket size
-		long pendingBucket = getUtcEpoch() / 10;
+		// Capture seed for this spin
+		long seed = config.useUtcSync()
+				? getUtcEpoch() / 10      // 10-second deterministic bucket
+				: System.nanoTime();     // true random seed
 
 		int totalSpins = 28;
 		long accumulatedDelay = 0;
@@ -110,7 +112,7 @@ public class RaidRandomizerPlugin extends Plugin
 			);
 		}
 
-		// near miss
+		// Near miss
 		accumulatedDelay += 300;
 		executor.schedule(() ->
 						clientThread.invoke(() ->
@@ -124,12 +126,12 @@ public class RaidRandomizerPlugin extends Plugin
 				TimeUnit.MILLISECONDS
 		);
 
-		// final reveal
+		// Final reveal
 		accumulatedDelay += 600;
 		executor.schedule(() ->
 						clientThread.invoke(() ->
 						{
-							String result = rollRaid(pendingBucket);
+							String result = rollRaid(seed);
 
 							if (config.enableSounds())
 							{
@@ -150,6 +152,7 @@ public class RaidRandomizerPlugin extends Plugin
 
 		if (config.useUtcSync())
 		{
+			// Sync mode always includes all raids
 			list.add("Chambers of Xeric");
 			list.add("Theatre of Blood");
 			list.add("Tombs of Amascut");
@@ -169,11 +172,13 @@ public class RaidRandomizerPlugin extends Plugin
 		return Instant.now().getEpochSecond();
 	}
 
-
-	private String rollRaid(long bucket)
+	private String rollRaid(long seed)
 	{
 		List<String> pool = config.useUtcSync()
-				? Arrays.asList("Chambers of Xeric", "Theatre of Blood", "Tombs of Amascut")
+				? Arrays.asList(
+				"Chambers of Xeric",
+				"Theatre of Blood",
+				"Tombs of Amascut")
 				: getAvailableRaids();
 
 		if (pool.isEmpty())
@@ -181,18 +186,7 @@ public class RaidRandomizerPlugin extends Plugin
 			return "<col=ffffff>No raids enabled</col>";
 		}
 
-		Random random;
-
-		if (config.useUtcSync())
-		{
-			random = new Random(bucket);
-		}
-		else
-		{
-			random = new Random();
-		}
-
-
+		Random random = new Random(seed);
 		String selected = pool.get(random.nextInt(pool.size()));
 
 		switch (selected)
