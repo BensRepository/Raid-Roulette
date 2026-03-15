@@ -70,8 +70,8 @@ public class RaidRandomizerPlugin extends Plugin
 			return;
 		}
 
-		// capture deterministic bucket for THIS spin
-		long pendingBucket = getUtcEpoch() / 4;
+		// Bucket size
+		long pendingBucket = getUtcEpoch() / 10;
 
 		int totalSpins = 28;
 		long accumulatedDelay = 0;
@@ -124,7 +124,7 @@ public class RaidRandomizerPlugin extends Plugin
 				TimeUnit.MILLISECONDS
 		);
 
-		// final reveal (deterministic, independent)
+		// final reveal
 		accumulatedDelay += 600;
 		executor.schedule(() ->
 						clientThread.invoke(() ->
@@ -169,10 +169,7 @@ public class RaidRandomizerPlugin extends Plugin
 		return Instant.now().getEpochSecond();
 	}
 
-	/**
-	 * Deterministic raid selection using captured 4-second bucket.
 
-	 */
 	private String rollRaid(long bucket)
 	{
 		List<String> pool = config.useUtcSync()
